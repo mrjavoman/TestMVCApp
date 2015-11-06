@@ -132,7 +132,7 @@ namespace TestMVCApp.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult LogOff()
         {
-            _signInManager.SignOut();
+            _signInManager.SignOutAsync();
             return RedirectToAction(nameof(HomeController.Index), "Home");
         }
 
@@ -445,7 +445,7 @@ namespace TestMVCApp.Controllers
             if (!_databaseChecked)
             {
                 _databaseChecked = true;
-                context.Database.AsRelational().ApplyMigrations();
+                context.Database.Migrate();
             }
         }
 
@@ -459,7 +459,7 @@ namespace TestMVCApp.Controllers
 
         private async Task<ApplicationUser> GetCurrentUserAsync()
         {
-            return await _userManager.FindByIdAsync(Context.User.GetUserId());
+            return await _userManager.FindByIdAsync(HttpContext.User.GetUserId());
         }
 
         private IActionResult RedirectToLocal(string returnUrl)

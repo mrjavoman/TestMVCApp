@@ -19,9 +19,9 @@ using Microsoft.Framework.Configuration;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.Logging;
 using Microsoft.Framework.Logging.Console;
-using Microsoft.Framework.Runtime;
 using TestMVCApp.Models;
 using TestMVCApp.Services;
+using Microsoft.Dnx.Runtime;
 
 namespace TestMVCApp
 {
@@ -31,7 +31,8 @@ namespace TestMVCApp
         {
             // Setup configuration sources.
 
-            var builder = new ConfigurationBuilder(appEnv.ApplicationBasePath)
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(appEnv.ApplicationBasePath)
                 .AddJsonFile("config.json")
                 .AddJsonFile($"config.{env.EnvironmentName}.json", optional: true);
 
@@ -61,21 +62,6 @@ namespace TestMVCApp
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // Configure the options for the authentication middleware.
-            // You can add options for Google, Twitter and other middleware as shown below.
-            // For more information see http://go.microsoft.com/fwlink/?LinkID=532715
-            services.Configure<FacebookAuthenticationOptions>(options =>
-            {
-                options.AppId = Configuration["Authentication:Facebook:AppId"];
-                options.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-            });
-
-            services.Configure<MicrosoftAccountAuthenticationOptions>(options =>
-            {
-                options.ClientId = Configuration["Authentication:MicrosoftAccount:ClientId"];
-                options.ClientSecret = Configuration["Authentication:MicrosoftAccount:ClientSecret"];
-            });
-
             // Add MVC services to the services container.
             services.AddMvc();
 
@@ -100,14 +86,15 @@ namespace TestMVCApp
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
-                app.UseErrorPage(ErrorPageOptions.ShowAll);
+                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Home/Error");                
                 app.UseDatabaseErrorPage(DatabaseErrorPageOptions.ShowAll);
             }
             else
             {
                 // Add Error handling middleware which catches all application specific errors and
                 // sends the request to the following path or controller action.
-                app.UseErrorHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Error");
             }
 
             // Add static files to the request pipeline.

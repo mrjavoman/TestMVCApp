@@ -4,25 +4,25 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.Entity;
 using Microsoft.Data.Entity.Metadata;
-using Microsoft.Data.Entity.Relational.Migrations.Infrastructure;
 using TestMVCApp.Models;
+using Microsoft.Data.Entity.Infrastructure;
 
 namespace TestMVCApp.Migrations
 {
-    [ContextType(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ApplicationDbContext))]
     partial class CreateIdentitySchema
     {
-        public override string Id
-        {
-            get { return "00000000000000_CreateIdentitySchema"; }
-        }
+        //public override string Id
+        //{
+        //    get { return "00000000000000_CreateIdentitySchema"; }
+        //}
 
-        public override string ProductVersion
-        {
-            get { return "7.0.0-beta5"; }
-        }
+        //public override string ProductVersion
+        //{
+        //    get { return "7.0.0-beta8"; }
+        //}
 
-        public override void BuildTargetModel(ModelBuilder builder)
+        protected override void BuildTargetModel(ModelBuilder builder)
         {
             builder
                 .Annotation("SqlServer:ValueGeneration", "Identity");
@@ -30,11 +30,11 @@ namespace TestMVCApp.Migrations
             builder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .GenerateValueOnAdd()
+                        .ValueGeneratedOnAdd()
                         .Annotation("OriginalValueIndex", 0);
 
                     b.Property<string>("ConcurrencyStamp")
-                        .ConcurrencyToken()
+                        .IsConcurrencyToken()
                         .Annotation("OriginalValueIndex", 1);
 
                     b.Property<string>("Name")
@@ -43,7 +43,7 @@ namespace TestMVCApp.Migrations
                     b.Property<string>("NormalizedName")
                         .Annotation("OriginalValueIndex", 3);
 
-                    b.Key("Id");
+                    b.HasKey("Id");
 
                     b.Annotation("Relational:TableName", "AspNetRoles");
                 });
@@ -51,8 +51,7 @@ namespace TestMVCApp.Migrations
             builder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRoleClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .GenerateValueOnAdd()
-                        .StoreGeneratedPattern(StoreGeneratedPattern.Identity)
+                        .ValueGeneratedOnAdd()                       
                         .Annotation("OriginalValueIndex", 0);
 
                     b.Property<string>("ClaimType")
@@ -64,7 +63,7 @@ namespace TestMVCApp.Migrations
                     b.Property<string>("RoleId")
                         .Annotation("OriginalValueIndex", 3);
 
-                    b.Key("Id");
+                    b.HasKey("Id");
 
                     b.Annotation("Relational:TableName", "AspNetRoleClaims");
                 });
@@ -72,8 +71,7 @@ namespace TestMVCApp.Migrations
             builder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
-                        .GenerateValueOnAdd()
-                        .StoreGeneratedPattern(StoreGeneratedPattern.Identity)
+                        .ValueGeneratedOnAdd()
                         .Annotation("OriginalValueIndex", 0);
 
                     b.Property<string>("ClaimType")
@@ -85,7 +83,7 @@ namespace TestMVCApp.Migrations
                     b.Property<string>("UserId")
                         .Annotation("OriginalValueIndex", 3);
 
-                    b.Key("Id");
+                    b.HasKey("Id");
 
                     b.Annotation("Relational:TableName", "AspNetUserClaims");
                 });
@@ -93,11 +91,11 @@ namespace TestMVCApp.Migrations
             builder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .GenerateValueOnAdd()
+                        .ValueGeneratedOnAdd()
                         .Annotation("OriginalValueIndex", 0);
 
                     b.Property<string>("ProviderKey")
-                        .GenerateValueOnAdd()
+                        .ValueGeneratedOnAdd()
                         .Annotation("OriginalValueIndex", 1);
 
                     b.Property<string>("ProviderDisplayName")
@@ -106,7 +104,7 @@ namespace TestMVCApp.Migrations
                     b.Property<string>("UserId")
                         .Annotation("OriginalValueIndex", 3);
 
-                    b.Key("LoginProvider", "ProviderKey");
+                    b.HasKey("LoginProvider", "ProviderKey");
 
                     b.Annotation("Relational:TableName", "AspNetUserLogins");
                 });
@@ -119,7 +117,7 @@ namespace TestMVCApp.Migrations
                     b.Property<string>("RoleId")
                         .Annotation("OriginalValueIndex", 1);
 
-                    b.Key("UserId", "RoleId");
+                    b.HasKey("UserId", "RoleId");
 
                     b.Annotation("Relational:TableName", "AspNetUserRoles");
                 });
@@ -127,14 +125,14 @@ namespace TestMVCApp.Migrations
             builder.Entity("TestMVCApp.Models.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
-                        .GenerateValueOnAdd()
+                        .ValueGeneratedOnAdd()
                         .Annotation("OriginalValueIndex", 0);
 
                     b.Property<int>("AccessFailedCount")
                         .Annotation("OriginalValueIndex", 1);
 
                     b.Property<string>("ConcurrencyStamp")
-                        .ConcurrencyToken()
+                        .IsConcurrencyToken()
                         .Annotation("OriginalValueIndex", 2);
 
                     b.Property<string>("Email")
@@ -173,40 +171,40 @@ namespace TestMVCApp.Migrations
                     b.Property<string>("UserName")
                         .Annotation("OriginalValueIndex", 14);
 
-                    b.Key("Id");
+                    b.HasKey("Id");
 
                     b.Annotation("Relational:TableName", "AspNetUsers");
                 });
 
             builder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityRoleClaim<string>", b =>
                 {
-                    b.Reference("Microsoft.AspNet.Identity.EntityFramework.IdentityRole")
-                        .InverseCollection()
+                    b.HasOne("Microsoft.AspNet.Identity.EntityFramework.IdentityRole")
+                        .WithMany()
                         .ForeignKey("RoleId");
                 });
 
             builder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityUserClaim<string>", b =>
                 {
-                    b.Reference("TestMVCApp.Models.ApplicationUser")
-                        .InverseCollection()
+                    b.HasOne("TestMVCApp.Models.ApplicationUser")
+                        .WithMany()
                         .ForeignKey("UserId");
                 });
 
             builder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityUserLogin<string>", b =>
                 {
-                    b.Reference("TestMVCApp.Models.ApplicationUser")
-                        .InverseCollection()
+                    b.HasOne("TestMVCApp.Models.ApplicationUser")
+                        .WithMany()
                         .ForeignKey("UserId");
                 });
 
             builder.Entity("Microsoft.AspNet.Identity.EntityFramework.IdentityUserRole<string>", b =>
                 {
-                    b.Reference("Microsoft.AspNet.Identity.EntityFramework.IdentityRole")
-                        .InverseCollection()
+                    b.HasOne("Microsoft.AspNet.Identity.EntityFramework.IdentityRole")
+                        .WithMany()
                         .ForeignKey("RoleId");
 
-                    b.Reference("TestMVCApp.Models.ApplicationUser")
-                        .InverseCollection()
+                    b.HasOne("TestMVCApp.Models.ApplicationUser")
+                        .WithMany()
                         .ForeignKey("UserId");
                 });
         }
