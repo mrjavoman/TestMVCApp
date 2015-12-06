@@ -15,18 +15,21 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Routing;
 using Microsoft.Data.Entity;
-using Microsoft.Framework.Configuration;
-using Microsoft.Framework.DependencyInjection;
-using Microsoft.Framework.Logging;
-using Microsoft.Framework.Logging.Console;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using TestMVCApp.Models;
 using TestMVCApp.Services;
 using Microsoft.Dnx.Runtime;
+using Microsoft.Extensions.PlatformAbstractions;
 
 namespace TestMVCApp
 {
     public class Startup
     {
+        public static void Main(string[] args) => WebApplication.Run<Startup>(args);
+
         public Startup(IHostingEnvironment env, IApplicationEnvironment appEnv)
         {
             // Setup configuration sources.
@@ -88,7 +91,7 @@ namespace TestMVCApp
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
                 app.UseExceptionHandler("/Home/Error");                
-                app.UseDatabaseErrorPage(DatabaseErrorPageOptions.ShowAll);
+                app.UseDatabaseErrorPage(options => options.EnableAll());
             }
             else
             {
